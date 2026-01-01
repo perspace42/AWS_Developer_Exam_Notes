@@ -8,7 +8,7 @@ Load balancers are servers that forward internet traffic to multiple servers (EC
 * Seamlessly handle failures of downstream instances
 * Do regular health checks to your instances
 * Provide SSL termination (HTTPS) for your websites
-* Enforce stickiness with cookies
+* Enforce stickiness with cookies (ensure a user's requests are consistently routed to the same backend server by the load balancer, preserving session state across interactions.)
 * High availability across zones
 * Separate public traffic from private traffic
 
