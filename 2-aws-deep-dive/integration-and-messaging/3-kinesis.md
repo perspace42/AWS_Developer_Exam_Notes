@@ -66,6 +66,6 @@ Kinesis is a managed service service which makes it easy to collect and analyze 
 | Data is deleted after consumed       | Data is not persisted                         | Can replay data                      |
 | Can have as many consumer as we want | Up to 10 million subscribers                  | Can have as many consumer as we want |
 | No need to provision throughput      | No need to provision throughput               | Must provision throughput            |
-| No ordering (except FIFO)            | Pub/Sub                                       | Ordering at the shard level          |
+| No ordering (except FIFO)            | Publish/Subscribe messaging pattern           | Ordering at the shard level          |
 | Individual message delay capability  | Up to 100k topics                             | Data expires after X days            |
 |                                      | Integrates with SQS for fan-out architecture  | Used for big data analytics and ETL  |
