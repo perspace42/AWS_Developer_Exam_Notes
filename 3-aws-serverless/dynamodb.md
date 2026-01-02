@@ -134,7 +134,7 @@
 
 ## Batch Writes
 
-- **BatchWriteIem**
+- **BatchWriteItem**
     - Up to 25 *PutItem* and/or *DeleteItem* in one call
     - Up to 16MB of data written
     - Up to 400KB or data per item
