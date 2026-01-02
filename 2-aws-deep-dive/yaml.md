@@ -16,3 +16,6 @@ YAML stands for "YAML Ain't Markup Language"
     - Multi line strings
     - Case sensitive
     - Can include comments
+
+#### Yaml Syntax Reference
+- https://docs.ansible.com/projects/ansible/latest/reference_appendices/YAMLSyntax.html
