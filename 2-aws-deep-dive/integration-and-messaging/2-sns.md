@@ -34,7 +34,7 @@ SNS is a fully managed messaging service for both application to application (A2
     - This works with:
         - Google GCM
         - Apple APNS
-        - Amazon ADM
+        - Amazon ADM (Application Discovery Manager)
 
 ## Security
 - Encryption:
