@@ -15,7 +15,7 @@
 - Pinpoint service issues
 - Review request behavior
 - Find errors and exceptions
-- Are we meeting time SLA?
+- Are we meeting time SLA (Service Level Agreement)?
 - Where I am throttled?
 - Identify users that are impacted
 
