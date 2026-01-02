@@ -127,7 +127,7 @@ aws lambda invoke --function-name hello-world --cli-binary-format raw-in-base64-
 - Automatic retry: 3 retries: first one right after failure, second one waits 1 minute, third one after 2 minutes (exponential backoff)
 - Lambda function should be idempotent - in case of retries the result should be the same
 - Retries can cause duplicate log entries in CloudWatch logs
-- DQL: in case of failure after retries the lambda function can send an event to SNS or SQS
+- DLQ: in case of failure after retries the lambda function can send an event to SNS or SQS
 - Services that invoke async lambda functions:
     - S3
     - SNS
