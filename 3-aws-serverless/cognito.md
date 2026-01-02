@@ -76,7 +76,7 @@
 | Database of users for a web/mobile application       | Obtains AWS credentials for the users            |
 | Allows to federate logins (Public Social, SAML, etc) | Users can login through Public Social, SAML, CUP |
 | Customize the UI used for auth                       | User can be guest uses (unauthenticated)         |
-| Hast triggers for AWS Lambda during auth flow        | Users are mapped to IAM roles/policies           |
+| Has triggers for AWS Lambda during auth flow         | Users are mapped to IAM roles/policies           |
 | **Manage username/password**                         | **Give access to AWS services**                  |
 
 ## Cognito Sync
