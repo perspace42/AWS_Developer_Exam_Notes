@@ -1,72 +1,64 @@
-# CodeDeploy
+# AWS CodeDeploy
 
-- Deploy your application automatically to multiple EC2 instances
-- These instances are not managed by Elastic Beanstalk
-- There are several ways to handle deployments using open source tools (Ansible, Terraform, Chef, Puppet, etc...)
-    - CodeDeploy is the alternative to these tools
+AWS CodeDeploy automates application deployments to **EC2 instances**, **on-premises servers**, **AWS Lambda**, **Amazon ECS**, and **Amazon EKS** without managing Elastic Beanstalk. It serves as a managed alternative to open-source tools like Ansible, Chef, Puppet, or Terraform.[web:30][web:35]
 
-#### How it works
-- Each EC2 Machine (or On-Premise machine) must be running the CodeDeploy Agent: This is not needed for EC2/Lambda, only for EC2
-- The agent is continuously polling AWS CodeDeploy for work to do
-- CodeDeploy sends appspec.yml file.
-- Application is pulled from GitHub or S3
-- EC2 will run the deployment instructions
-- CodeDeploy Agent will report of success / failure of deployment on the instance
+## How It Works
 
- Additional information
-- EC2 instances are grouped by deployment group (dev / test / prod)
-- Lots of flexibility to define any kind of deployments
-- CodeDeploy can be chained into CodePipeline and use artifacts from there
-- CodeDeploy can re-use existing setup tools, works with any application, auto-scaling integration
-- Note: Blue / Green only works with EC2 instances (not on premise)
-- Support for AWS Lambda deployments
-- CodeDeploy does not provision resources
+1. **CodeDeploy Agent** (EC2/On-Prem only): Installed on target instances, polls CodeDeploy service for jobs. Not required for Lambda/ECS/EKS.  
+2. **AppSpec.yml**: Defines deployment instructions, sent with the revision.  
+3. **Source**: Pulls application bundle from S3, GitHub, Bitbucket, or CodeCommit.  
+4. **Execution**: Runs hooks/scripts on instances; agent reports success/failure back to CodeDeploy.  
+5. **Grouping**: Targets **deployment groups** (tagged instances, ASGs) for staged rollouts.[web:26][web:30]
 
-#### Primary Components
-- Application: unique name
-- Compute platform: EC2/On-Premise or Lambda
-- Deployment configuration: Deployment rules for success / failures
-    - EC2/On-Premise: you can specify the minimum number of healthy instances for the deployment.
-    - AWS Lambda: specify how traffic is routed to your updated Lambda function versions.
-- Deployment group: group of tagged instances (allows to deploy gradually)
-- Deployment type: In-place/All at once deployment, Linear or Blue/green deployment
-- IAM instance profile: need to give EC2 the permissions to pull from S3 / GitHub
-- Application Revision: application code + appspec.yml file
-- Service role: Role for CodeDeploy to perform what it needs
-- Target revision: Target deployment application version
+**Integrates** with CodePipeline for CI/CD pipelines, supports Auto Scaling, and reuses existing tools. **Note**: Blue/Green works with EC2 + ALB (not on-premises); no resource provisioning.
 
-#### CodeDeploy AppSpec
-- File section: how to source and copy from S3 / GitHub to filesystem
-- Hooks: set of instructions to do to deploy the new version (hooks can have timeouts). The order is:
-    - ApplicationStop
-    - DownloadBundle
-    - BeforeInstall
-    - AfterInstall
-    - ApplicationStart
-    - **ValidateService: really important**
+## Primary Components
 
-#### Deployment Config
-- Configs:
-    - One a time: one instance at a time, one instance fails => deployment stops
-    - Half at a time: 50%
-    - All at once: quick but no healthy host, downtime. Good for dev
-    - Custom: min healthy host = 75%
-- Failures:
-    - Instances stay in “failed state”
-    - New deployments will first be deployed to “failed state” instances
-    - To rollback: redeploy old deployment or enable automated rollback for failures
-- Deployment Targets:
-    - Set of EC2 instances with tags
-    - Directly to an ASG
-    - Mix of ASG / Tags, so you can build deployment segments
-    - Customization in scripts with DEPLOYMENT_GROUP_NAME environment variables
+- **Application**: Logical container (unique name).  
+- **Compute Platform**: EC2/On-Prem, Serverless (Lambda), ECS, EKS.  
+- **Deployment Configuration**: Rules for rollout/success (e.g., min healthy hosts).  
+- **Deployment Group**: Logical set of instances/ASGs (dev/prod tags).  
+- **Deployment Type**: In-place or Blue/Green.  
+- **IAM Roles**: Instance profile (S3/GitHub access); Service role (CodeDeploy permissions).  
+- **Revision**: Code bundle + AppSpec.yml.  
+- **Target Revision**: Specific version to deploy.[web:35]
 
- Deployment types:
-- In place deployment/All at on ce
-    - half the time (tuen)
-- Blue / Green Deployment
-    - Attached to one auto-scaling group of instances
-    - new auto-scaling group of instances created (green)
-    - if it passes the health checks, version 1 (original asg) is deleted (blue)
-- Linear
-    - Equal increments and intervals in N minutes 
+## AppSpec File Structure
+
+Defines files to copy and **hooks** (scripts with timeouts/runAs). Fixed order:
+
+| Hook | Purpose |
+|------|---------|
+| **ApplicationStop** | Gracefully stop old app. |
+| **DownloadBundle** | Fetch revision (auto). |
+| **BeforeInstall** | Prep environment/prereqs. |
+| **AfterInstall** | Post-copy setup (permissions/migrations). |
+| **ApplicationStart** | Start new app. |
+| **ValidateService** | Health checks (critical for success).[web:26][web:30] |
+
+## Deployment Configurations (In-Place)
+
+Control batching/success criteria for EC2/On-Prem:
+
+| Config | Rollout | Failure Behavior | Use Case |
+|--------|---------|------------------|----------|
+| **OneAtATime** | Sequential (1 instance). | Stops/rolls back on first failure. | High availability prod. |
+| **HalfAtATime** | 50% → 50%. | Succeeds if >50% healthy. | Balanced prod. |
+| **AllAtOnce** | 100% simultaneous. | Full downtime risk. | Dev/test. |
+| **Custom** | e.g., MinHealthyHosts=75%. | Threshold-based. | Tailored ASGs.[web:35][web:45] |
+
+**Failures**: Instances marked failed; new deploys retry them first. Rollback via redeploy old revision or auto-rollbacks.
+
+**Targets**: Tags, ASG, or mix; use `DEPLOYMENT_GROUP_NAME` env var in scripts.
+
+## Deployment Types
+
+### In-Place
+Updates existing instances:
+- AllAtOnce, HalfAtATime, OneAtATime, Linear (custom batches every N mins).[web:35]
+
+### Blue/Green (Zero-Downtime)
+Deploys to new "green" env, swaps traffic:
+- **ASG Replacement**: Updates same ASG (terminate old → green instances).  
+- **New ASG**: Creates green ASG → validate → swap ALB target group → delete blue.  
+Supports Canary (10%→100%) or Linear traffic shifting. EC2/ALB, ECS, Lambda.[web:36][web:42]
