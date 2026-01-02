@@ -96,7 +96,7 @@ CloudWatch is used for monitoring.
     - You can't specify a KMS key when creating a new log via `aws logs create-log-group`
 
 ### AWS CloudWatch Events
-- Schedule: Cron jobs
+- Schedule: Cron jobs (scheduled rules using cron syntax to trigger automated actions at precise times or intervals)
 - Event Pattern: Event rules to react to a service doing something
     - Ex: CodePipeline state changes
 - Triggers to Lambda functions, SQS/SNS/Kinesis Messages
