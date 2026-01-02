@@ -39,7 +39,7 @@
         - migrate user
     - Message
         - custom message
-    - Toke creation
+    - Token creation
         - pre token generation
 
 ### Cognito User Pools - Hosted Authentication UI
