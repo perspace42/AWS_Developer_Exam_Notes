@@ -61,11 +61,11 @@ Kinesis is a managed service service which makes it easy to collect and analyze 
 ## SQS vs SNS vs Kinesis
 
 | SQS                                  | SNS                                           | Kinesis                              |
-| -------------------------------------| --------------------------------------------- | ------------------------------------ |
+| ------------------------------------ | --------------------------------------------- | ------------------------------------ |
 | Consumer pulls data                  | Data is pushed to many subscribers            | Consumer pulls data                  |
-| Data is deleted after consumed       | Up to 10 million subscribers                  | Can have as many consumer as we want |
-| Can have as many consumer as we want | Data os not persisted                         | Can replay data                      |
-| No need to provision throughput      | Pub/Sub                                       | Used for big data analytics and ETL  |
-| No ordering (except FIFO)            | Up to 100k topics                             | Data expires after X days            |
-| Individual message delay capability  | No need to provision throughput               | Must provision throughput            |
-|                                      | Integrates with SQS for fan-out architecture  | Ordering at the shard level          |
+| Data is deleted after consumed       | Data is not persisted                         | Can replay data                      |
+| Can have as many consumer as we want | Up to 10 million subscribers                  | Can have as many consumer as we want |
+| No need to provision throughput      | No need to provision throughput               | Must provision throughput            |
+| No ordering (except FIFO)            | Pub/Sub                                       | Ordering at the shard level          |
+| Individual message delay capability  | Up to 100k topics                             | Data expires after X days            |
+|                                      | Integrates with SQS for fan-out architecture  | Used for big data analytics and ETL  |
