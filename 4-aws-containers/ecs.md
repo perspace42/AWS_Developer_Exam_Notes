@@ -44,7 +44,7 @@
 }
 ```
 
-* **Tip:** Use `awsvpc` mode with Fargate for ENI per task (gets its own private IP).
+* **Tip:** Use `awsvpc` mode with Fargate for ENI (Elastic Network Interface) per task (gets its own private IP).
 
 ---
 
@@ -107,7 +107,7 @@
 
 * **bridge:** Docker default (EC2 only).
 * **host:** Host’s network namespace (EC2 only).
-* **awsvpc:** Task gets its own ENI (Fargate or EC2).
+* **awsvpc:** Task gets its own ENI (Elastic Network Interface) (Fargate or EC2).
 * **none:** No networking.
 
 ---
@@ -149,7 +149,7 @@
 * **EC2 launch type requires managing and scaling EC2 instances.**
 * **Services auto-recover failed tasks. Standalone tasks do not.**
 * **ECS integrates with ECR (Elastic Container Registry) or DockerHub.**
-* **Security Groups/Subnets:** ECS tasks (in awsvpc) use ENIs, so attach security groups/subnets accordingly.
+* **Security Groups/Subnets:** ECS tasks (in awsvpc) use ENI (Elastic Network Interface)s, so attach security groups/subnets accordingly.
 * **Autoscaling:** ECS can scale services based on CloudWatch alarms.
 * **Decoupling Databases:** when you remove a database to decouple environments, remove the _security group_ first, or you won't be able to delete the environment
 * **Terminating Stopped Containers:** causes de-sync in the environment and does not remove the instance from the cluster
@@ -163,7 +163,8 @@
 | ----------------- | ---------- | -------------- |
 | Managed Compute   | You        | AWS            |
 | Networking Modes  | all        | awsvpc only    |
-| Task ENI          | Optional   | Always         |
+| Task ENI (Elastic Network Interface)          | Optional   | Always         |
 | OS/Kernel Control | Yes        | No             |
 | Daemon Service    | Yes        | No             |
+
 
